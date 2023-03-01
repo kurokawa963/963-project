@@ -2,6 +2,7 @@ import { Link, BrowserRouter, Routes, Route } from "react-router-dom"
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Main } from "./pages/Main";
+import { Mypage } from "./pages/Mypage";
 
 
 const App = () => {
@@ -14,7 +15,7 @@ const App = () => {
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
             </svg>
             <span class="ml-3 text-xl">
-              <Link to="/Main">過労☆メイト</Link></span>
+              <Link to="/main">過労☆メイト</Link></span>
           </a>
           <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
             <Link to="/Login" class="mr-5 hover:text-gray-900">ログイン</Link>
@@ -42,6 +43,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/main" element={<Main />}></Route>
+        <Route path="/mypage" element={<Mypage />}></Route>
       </Routes>
 
     </BrowserRouter>
