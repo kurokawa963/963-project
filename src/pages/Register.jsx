@@ -35,17 +35,23 @@ export const Register = () => {
     const [registerEmail, setRegisterEmail] = useState("");
     const [registerPassword, setRegisterPassword] = useState("");
     const [registerName, setRegisterName] = useState("");
+    // const [gender, setGender] = useState("");
+    // const [email, setEmail] = useState("");
+
+
 
     const { register, handleSubmit, setValue } = useForm({
         shouldUnregister: false,
     });
 
+
+
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        const registerName = e.target[0].value;
-        const registerEmail = e.target[1].value;
-        const registerPassword = e.target[2].value;
+        // const registerName = e.target[0].value;
+        // const registerEmail = e.target[5].value;
+        // const registerPassword = e.target[6].value;
 
         try {
             const res = await createUserWithEmailAndPassword(
@@ -66,10 +72,9 @@ export const Register = () => {
                     name: res.user.displayName,
                     email: res.user.email,
                     uid: res.user.uid,
-                    ...data
                 });
 
-                await setDoc(doc(db, "user"))
+                // await setDoc(doc(db, "user"))
             }
         } catch (error) {
 
@@ -122,7 +127,7 @@ export const Register = () => {
             ) : (
                 <>
                     <h1>新規登録</h1>
-                    <form onSubmit={handleSubmit(onSubmit)}>
+                    <form onSubmit={onSubmit}>
                         <div>
                             <label htmlFor="">ニックネーム</label>
                             <input className="rounded border border-gray-300 hover:border-indigo-500"
@@ -133,7 +138,7 @@ export const Register = () => {
                         </div>
                         <div>
                             <label htmlFor="">性別
-                                    <select name="" id="gender" className="rounded border border-gray-300 hover:border-indigo-500"  {...register('gender', { required: true })}>
+                                <select name="" id="gender" className="rounded border border-gray-300 hover:border-indigo-500" {...register('gender')}>
                                     <option value="0"></option>
                                     <option value="1">男</option>
                                     <option value="2">女</option>
@@ -143,8 +148,8 @@ export const Register = () => {
                         <div>
                             <label htmlFor="">住所</label>
                             <p>郵便番号を入力してください</p>
-                                〒<input className="rounded border border-gray-300 hover:border-indigo-500"
-                                    type="text" onChange={handleChange} id="post"   />
+                            〒<input className="rounded border border-gray-300 hover:border-indigo-500"
+                                type="text" onChange={handleChange} id="post" />
                         </div>
                         <div>
                             <label htmlFor="prefecture" className="form-label">都道府県</label>
@@ -168,16 +173,16 @@ export const Register = () => {
                                 }}
                                 isMulti
 
-                            // trueに
+                                // trueに
                                 id="genre"
-                                    {...register('genre')}
+                                {...register('genre')}
                             />
                         </div>
                         <div>
                             <label htmlFor="">生年月日</label>
-                                <input type="date" value={date} min="1900-01-01" max="2050-12-31" onChange={(e) => onChangeDate(e)}
-                                    id="birth"
-                                />
+                            <input type="date" value={date} min="1900-01-01" max="2050-12-31" onChange={(e) => onChangeDate(e)}
+                                id="birth"
+                            />
                         </div>
                         <div>
                             <label>メールアドレス</label>
