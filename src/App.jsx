@@ -3,7 +3,7 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Main } from "./pages/Main";
 import { Mypage } from "./pages/Mypage";
-import { Playing } from "./pages/Playing";
+import { Choice } from "./pages/Choice";
 import { Making } from "./pages/Making";
 
 
@@ -46,7 +46,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/main" element={<Main />}></Route>
         <Route path="/mypage" element={<Mypage />}></Route>
-        <Route path="/playing" element={<Playing />}></Route>
+        <Route path="/choice" element={<Choice />}></Route>
         <Route path="/making" element={<Making />}></Route>
       </Routes>
 

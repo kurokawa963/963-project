@@ -8,7 +8,7 @@ import {
 import { auth } from "../firebase";
 /* 「Link」をimport↓ */
 import { Navigate, Link } from "react-router-dom";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, addDoc } from "firebase/firestore";
 import { db } from "../firebase"
 import axios from "axios";
 import Select from "react-select";
@@ -35,23 +35,25 @@ export const Register = () => {
     const [registerEmail, setRegisterEmail] = useState("");
     const [registerPassword, setRegisterPassword] = useState("");
     const [registerName, setRegisterName] = useState("");
-    // const [gender, setGender] = useState("");
+    // const [genre, setGenre] = useState("");
     // const [email, setEmail] = useState("");
 
-
+  const [selectGenre, setSelectGenre] = useState(genres[0]);
 
     const { register, handleSubmit, setValue } = useForm({
         shouldUnregister: false,
     });
 
-
+    // const onSubmit2 = async (data) => {
+    //     console.log(data);
+    //     const result = await setDoc(doc(db, "users", res.user.uid), {
+    //         genre: data.genre
+    //     })
+    // }
 
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        // const registerName = e.target[0].value;
-        // const registerEmail = e.target[5].value;
-        // const registerPassword = e.target[6].value;
 
         try {
             const res = await createUserWithEmailAndPassword(
@@ -59,9 +61,10 @@ export const Register = () => {
                 registerEmail,
                 registerPassword,
             );
-            updateProfile(auth.currentUser, {
+            await updateProfile(auth.currentUser, {
                 displayName: registerName,
             });
+            
             const docRef = doc(db, "users", res.user.uid);
             const docSnap = await getDoc(docRef);
             console.log(res)
@@ -72,6 +75,7 @@ export const Register = () => {
                     name: res.user.displayName,
                     email: res.user.email,
                     uid: res.user.uid,
+                    genre:selectGenre
                 });
 
                 // await setDoc(doc(db, "user"))
@@ -83,6 +87,8 @@ export const Register = () => {
             alert("正しく入力してください");
         }
     };
+
+
 
     const [user, setUser] = useState("");
 
@@ -106,7 +112,7 @@ export const Register = () => {
         }
     }
 
-    const [selectGenre, setSelectGenre] = useState(genres[0]);
+  
     const [date, setDate] = useState("2000-01-01");
     const onChangeDate = (e) => {
 
@@ -138,7 +144,7 @@ export const Register = () => {
                         </div>
                         <div>
                             <label htmlFor="">性別
-                                <select name="" id="gender" className="rounded border border-gray-300 hover:border-indigo-500" {...register('gender')}>
+                                <select name="" id="gender" className="rounded border border-gray-300 hover:border-indigo-500" >
                                     <option value="0"></option>
                                     <option value="1">男</option>
                                     <option value="2">女</option>
@@ -166,16 +172,16 @@ export const Register = () => {
 
                         <div>
                             <label htmlFor="">よく行くジャンル</label>
-                            <Select
-                                options={genres}
-                                onChange={(value) => {
-                                    value ? setSelectGenre([...value]) : null;
-                                }}
+                                <Select
+                                    options={genres}
+                                    onChange={(value) => {
+                                        value ? setSelectGenre([...value]) : null
+                                    }} {...(e) => setSelectGenre(e.target.value) 
+                                    }
                                 isMulti
 
                                 // trueに
                                 id="genre"
-                                {...register('genre')}
                             />
                         </div>
                         <div>
