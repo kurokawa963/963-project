@@ -4,32 +4,35 @@ import axios from "axios";
 import { Navigate, Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { db, storage } from "../firebase";
-import { ref, getDownloadURL, uploadBytes,getStorage } from "firebase/storage";
+import { ref, getDownloadURL, uploadBytes, getStorage } from "firebase/storage";
 
-import { collection, addDoc, serverTimestamp, setDoc, doc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, setDoc, doc,getDocs } from "firebase/firestore";
 import Select from "react-select";
+import genresJson from "../static/genres.json"
 
 import { useForm } from 'react-hook-form';
 
 const input = "rounded border border-gray-300 hover:border-indigo-500"
 
+
+
 const genres = [
-    { value: "nature", label: "自然" },
-    { value: "history", label: "歴史" },
-    { value: "art", label: "アート" },
-    { value: "hotspring", label: "温泉" },
-    { value: "activity", label: "アクティビティ" },
-    { value: "shopping", label: "ショッピング" },
-    { value: "food", label: "グルメ" },
-    { value: "landscape", label: "景色" },
-    { value: "night", label: "夜遊び" },
+    { value: "1", label: "自然" },
+    { value: "2", label: "歴史" },
+    { value: "3", label: "アート" },
+    { value: "3", label: "温泉" },
+    { value: "4", label: "アクティビティ" },
+    { value: "5", label: "ショッピング" },
+    { value: "6", label: "グルメ" },
+    { value: "7", label: "景色" },
+    { value: "8", label: "夜遊び" },
 ];
 
 export const Making = () => {
 
     const [user, setUser] = useState("");
     const [loading, setLoading] = useState(true);
-    const [selectGenre, setSelectGenre] = useState([0]);
+    const [selectGenre, setSelectGenre] = useState();
     const { register, handleSubmit } = useForm({
         shouldUnregister: false,
     });
@@ -44,28 +47,36 @@ export const Making = () => {
     };
     console.log(image);
 
-    
+
 
     const onSubmit = async (data) => {
 
-       
 
-        const imageRef = ref(storage, "image/" + image.name);
 
-        uploadBytes(imageRef, image).then(
-            (snapshot) => {
-            console.log("Uploaded a file!");
-            
-            }
-        );
+        // const imageRef = ref(storage, "image/" + image.name);
+
+        // uploadBytes(imageRef, image).then(
+        //     (snapshot) => {
+        //         console.log("Uploaded a file!");
+
+        //     }
+        // );
 
         console.log(selectGenre)
+
+
+
+        // const stampref = collection(db, "stamptitle",)
+        // await getDocs(stampref)
+
+        // console.log(stampref.id)
+
 
         const stamptitle = await addDoc(collection(db, "stamptitle"), {
             region: data.region,
             title: data.title,
             wayto: data.wayto,
-            genre: selectGenre,
+
             timestamp: serverTimestamp(),
 
         })
@@ -86,6 +97,34 @@ export const Making = () => {
             hint32: data.hint32,
             id: stamptitle._key.path.segments[1]
         })
+
+
+
+        for (let i = 0; i < selectGenre.length; i++) {
+
+
+            console.log([selectGenre[i].label])
+
+
+
+            const genreconnect = await addDoc(collection(db, "genreconnect"), {
+
+
+                genre: selectGenre[i].label,
+
+
+                id: stamptitle._key.path.segments[1]
+
+
+
+
+
+            }
+            )
+
+console.log(genreconnect)
+
+        }
     }
     // useEffect(() => {
     //     onAuthStateChanged(auth, (currentUser) => {
@@ -192,6 +231,7 @@ export const Making = () => {
                             }}
                             {...(e) => setSelectGenre(e.target.value)
                             }
+
                             isMulti
                             // trueに
                             id="genre"
@@ -200,7 +240,7 @@ export const Making = () => {
 
                     </div>
                 </div>
-                <div className="m-2">チェックポイント①
+                {/* <div className="m-2">チェックポイント①
                     <div>
                         <label htmlFor="">場所の名前
                             <input className={input}
@@ -332,7 +372,7 @@ export const Making = () => {
                                 type="text" />
                         </label>
                     </div>
-                </div>
+                </div> */}
                 <button className="rounded border">登録</button>
             </form>
             {/* </>)}

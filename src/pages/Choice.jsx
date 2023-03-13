@@ -5,13 +5,14 @@ import { useForm } from 'react-hook-form';
 
 import { useState, useEffect } from "react";
 import { db } from "../firebase";
-import { collection, query, orderBy, onSnapshot, limit, getDoc, where } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, limit, getDoc, where, doc, runTransaction } from "firebase/firestore";
+import { getExperimentalSetting } from "@firebase/util";
 
 
 
 const input = "rounded border border-gray-300 hover:border-indigo-500"
 
-
+const idDocRef = collection(db, "stamptitle")
 
 export const Choice = () => {
 
@@ -22,33 +23,95 @@ export const Choice = () => {
     const [user, setUser] = useState();
     const [loading, setLoading] = useState(true);
     const [stamptitle, setStamptitle] = useState([]);
-
-    // const genrearray = collection(db, "users", user.uid)
-
-    //     console.log(genrearray)
+    const [genre, setGenre] = useState([]);
 
     const onSubmit = async (data) => {
-        console.log(data.place)
-        
 
-            
+        const result = data.place
+        console.log(result)
+        const result2 = data.wayto
 
-            const q = query(collection(db, "stamptitle"), where("region", "array_contains", data.place)
-            );
-            // コレクション名変える
-            // orderByの内容変える
-            // 変数名変える
-            const unsub = onSnapshot(q, (documentSnapshot) => {
-                console.log(documentSnapshot.docs);
-                setStamptitle(documentSnapshot.docs.map((x) => ({ ...x.data(), id: x.id })));
-                // setLoading(false);
-            });
-            return unsub;
+
+        // const genrearray = collection(db, "users", user.uid)
+
+        //     console.log(genrearray)
+
+
+        const q = query(collection(db, "stamptitle")
+
+            , where("region", "==", result), where("wayto", "==", result2)
+        );
+
+     
+
+        onSnapshot(q, (documentSnapshot) => {
+            console.log(documentSnapshot.docs);
+
+            setStamptitle(documentSnapshot.docs.map((x) => ({ ...x.data(), id: x.id })));
+    
+        });
+
+        // ここまででスタンプタイトルのデータを取得する
+
+  for (let i = 0; i < stamptitle.length; i++) {
+            const titleconnect = stamptitle[i].id
+// スタンプタイトルのidを取得する
       
-       
-    } ;
+            console.log(titleconnect)
+            const q2 = query(collection(db, "genreconnect"), where("id", "==", titleconnect))
+// スタンプタイトルコレクションのidとジャンルコネクトのdocの中のidが同じとき出現させる
+            onSnapshot(q2, (documentSnapshot2) => {
+                console.log(documentSnapshot2.docs);
+
+                setGenre(documentSnapshot2.docs.map((x) => ({ ...x.data(), id: x.id })))
 
 
+            }
+            )
+
+
+
+        }
+  
+
+
+    }
+    const list2 = genre.map((x, i) => (
+        <tr key={i}>
+            <td>{x.genre}</td>
+        </tr>
+    ))
+    const list = stamptitle.map((x, i) => (
+        <tr key={i}>
+            <td>
+                {x.title}
+            </td>
+            <td>{list2}</td>
+            <td>{x.region}</td>
+        </tr>
+
+    ))
+
+
+
+
+
+    // setLoading(false);
+
+
+
+    // const list = 
+
+
+
+
+
+
+    // const list2 = genre.map((x, i) => (
+    //     <tr key={i}>
+    //         <td>{x.genre}</td>
+    //     </tr>
+    // ))
 
     // if (loading) {
     //     return <p>loading now...</p>;
@@ -121,14 +184,12 @@ export const Choice = () => {
                 </select>
                 <div><button className={input}>検索</button></div>
             </form>
-            {stamptitle.map((x, i) => (
-                <tr key={i}>
-                    <td></td>
-                    <td>{x.title}</td>
-                    <td>{x.genre}</td>
-                </tr>
-            ))}
+            <table>
+                <tbody>
+                    {list}
 
+                </tbody>
+            </table>
         </>
     )
 } 
