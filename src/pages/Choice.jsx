@@ -12,7 +12,7 @@ import { getExperimentalSetting } from "@firebase/util";
 
 const input = "rounded border border-gray-300 hover:border-indigo-500"
 
-const idDocRef = collection(db, "stamptitle")
+// const idDocRef = collection(db, "stamptitle")
 
 export const Choice = () => {
 
@@ -25,68 +25,94 @@ export const Choice = () => {
     const [stamptitle, setStamptitle] = useState([]);
     const [genre, setGenre] = useState([]);
 
+
+    // const genrearray = collection(db, "users", user.uid)
+
+    //     console.log(genrearray)
+
+    Promise.all([
+        db.collection("stamptitle").get(),
+        db.collection("genreconnect").get(),
+    ])
+
     const onSubmit = async (data) => {
 
         const result = data.place
         console.log(result)
         const result2 = data.wayto
-
-
-        // const genrearray = collection(db, "users", user.uid)
-
-        //     console.log(genrearray)
-
+        // 都道府県とジャンルの検索結果を取得します
 
         const q = query(collection(db, "stamptitle")
 
             , where("region", "==", result), where("wayto", "==", result2)
         );
 
-     
-
         onSnapshot(q, (documentSnapshot) => {
             console.log(documentSnapshot.docs);
 
             setStamptitle(documentSnapshot.docs.map((x) => ({ ...x.data(), id: x.id })));
-    
-        });
 
-        // ここまででスタンプタイトルのデータを取得する
-
-  for (let i = 0; i < stamptitle.length; i++) {
-            const titleconnect = stamptitle[i].id
-// スタンプタイトルのidを取得する
-      
-            console.log(titleconnect)
-            const q2 = query(collection(db, "genreconnect"), where("id", "==", titleconnect))
-// スタンプタイトルコレクションのidとジャンルコネクトのdocの中のidが同じとき出現させる
-            onSnapshot(q2, (documentSnapshot2) => {
-                console.log(documentSnapshot2.docs);
-
-                setGenre(documentSnapshot2.docs.map((x) => ({ ...x.data(), id: x.id })))
-
-
-            }
-            )
-
-
-
-        }
-  
-
-
+        })
     }
+    useEffect(() => {
+        
+        const genre = []
+
+        const get = async () => {
+
+            
+            for (let i = 0; i < stamptitle.length; i++) {
+
+
+                // for (let id in stamptitle[i]) {
+
+                const titleconnect = stamptitle[i].id
+                // スタンプタイトルのidを取得する
+                // console.log(titleconnect)
+                // const q2 = query(collection(db, "genreconnect"), where("id", "==", titleconnect))
+                const q2 = query(collection(db, "genreconnect",), where("id", "==", titleconnect))
+                // const postSnap=collection(db,"genreconnect",titleconnect)
+                // console.log(postSnap);
+                // posts.push(postSnap.data())
+                // スタンプタイトルコレクションのidとジャンルコネクトのdocの中のidが同じとき出現させる
+                onSnapshot (q2, (documentSnapshot2) => {
+                    console.log(documentSnapshot2.docs);
+
+                    setGenre (documentSnapshot2.docs.map((x) => ({ ...x.data(), id: x.id })))
+
+                }
+                )
+                //  genre.push(q2.data())
+// return unsub
+                // }
+            }
+
+            // unsubで二つ目以降の結果を表示しない
+        }
+
+        get(genre)
+
+
+
+    }, [stamptitle]);
+
+    // ここまででスタンプタイトルのデータを取得する
+
+
+
+
     const list2 = genre.map((x, i) => (
-        <tr key={i}>
-            <td>{x.genre}</td>
-        </tr>
+
+        <td key={i}>{x.genre}</td>
+
     ))
+
     const list = stamptitle.map((x, i) => (
         <tr key={i}>
             <td>
-                {x.title}
+                <td>  <Link to={`/playing/${x.id}`}>{x.title}</Link></td>
             </td>
-            <td>{list2}</td>
+            <td></td>
             <td>{x.region}</td>
         </tr>
 
@@ -186,8 +212,9 @@ export const Choice = () => {
             </form>
             <table>
                 <tbody>
-                    {list}
 
+                    {list}
+                    {list2}
                 </tbody>
             </table>
         </>

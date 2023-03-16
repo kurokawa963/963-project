@@ -5,6 +5,7 @@ import { Main } from "./pages/Main";
 import { Mypage } from "./pages/Mypage";
 import { Choice } from "./pages/Choice";
 import { Making } from "./pages/Making";
+import { Playing } from "./pages/Playing";
 
 
 const App = () => {
@@ -48,6 +49,8 @@ const App = () => {
         <Route path="/mypage" element={<Mypage />}></Route>
         <Route path="/choice" element={<Choice />}></Route>
         <Route path="/making" element={<Making />}></Route>
+        <Route path="/playing/:id" element={<Playing />} />
+
       </Routes>
 
     </BrowserRouter>
