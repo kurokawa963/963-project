@@ -30,10 +30,7 @@ export const Choice = () => {
 
     //     console.log(genrearray)
 
-    Promise.all([
-        db.collection("stamptitle").get(),
-        db.collection("genreconnect").get(),
-    ])
+  
 
     const onSubmit = async (data) => {
 
@@ -98,7 +95,10 @@ export const Choice = () => {
 
     // ここまででスタンプタイトルのデータを取得する
 
-
+  Promise.all([
+        collection(db,"stamptitle"),
+        collection(db,"genreconnect"),
+    ])
 
 
     const list2 = genre.map((x, i) => (

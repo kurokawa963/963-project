@@ -47,125 +47,125 @@ export const Making = () => {
     const handleChange = (e) => {
         setImage(e.target.files[0]);
     };
+
+
     // console.log(image);
 
 
 
     const onSubmit = async (data) => {
 
+
+        //「国土地理院API」でキーワードから緯度・経度を含む住所情報を取得
+   
+        const url = `https://msearch.gsi.go.jp/address-search/AddressSearch?q=${data.address1}`
+        const response = await axios.get(url);
+        // const results = await response.json()
+        console.log(response.data)
+        const coordinates = response.data[0].geometry.coordinates
+        // setGeoLocation([coordinates[1], coordinates[0]])
+
+        // console.log(geoLocation[0])
+
+        const url2 = `https://msearch.gsi.go.jp/address-search/AddressSearch?q=${data.address2}`
+        const response2 = await axios.get(url2);
+        // const results2 = await response2.json()
+
+        console.log(response2.data)
+
+        const coordinates2 = response2.data[0].geometry.coordinates
+        // setGeoLocation2([coordinates2[1], coordinates2[0]])
+
+
+        // console.log(geoLocation2[0])
         
-            //「国土地理院API」でキーワードから緯度・経度を含む住所情報を取得
 
-            const url = `https://msearch.gsi.go.jp/address-search/AddressSearch?q=${data.address1}`
-            const response = await axios.get(url);
-            // const results = await response.json()
-            console.log(response.data)
-            const coordinates = response.data[0].geometry.coordinates
-            setGeoLocation([coordinates[1], coordinates[0]])
+        const imageRef = ref(storage, "image/" + image.name);
 
-
-
-            console.log(geoLocation[0])
-
-            const url2 = `https://msearch.gsi.go.jp/address-search/AddressSearch?q=${data.address2}`
-            const response2 = await axios.get(url2);
-            // const results2 = await response2.json()
-
-            console.log(response2.data)
-
-            const coordinates2 = response2.data[0].geometry.coordinates
-            setGeoLocation2([coordinates2[1], coordinates2[0]])
-
-
-            console.log(geoLocation2[0])
-
-            const imageRef = ref(storage, "image/" + image.name);
-
-            uploadBytes(imageRef, image).then(
-                (snapshot) => {
-                    console.log("Uploaded a file!");
-
-                }
-            );
-
-            console.log(selectGenre)
-
-
-
-            const stampref = collection(db, "stamptitle",)
-            await getDocs(stampref)
-
-            console.log(stampref.id)
-
-
-            const stamptitle = await addDoc(collection(db, "stamptitle"), {
-                region: data.region,
-                title: data.title,
-                wayto: data.wayto,
-
-                timestamp: serverTimestamp(),
-
-            })
-
-            console.log(stamptitle)
-
-            const stamprally1 = await setDoc(doc(db, "stamprally", stamptitle._key.path.segments[1]), {
-                place1: data.place1,
-                address1: data.address1,
-                latitude1: geoLocation[0],
-                longitude1: geoLocation[1],
-                time1: data.time1,
-                hint11: data.hint11,
-                hint21: data.hint21,
-                hint31: data.hint31,
-
-                id: stamptitle._key.path.segments[1]
-            })
-
-            const stamprally2 = await setDoc(doc(db, "stamprally2", stamptitle._key.path.segments[1]), {
-                place2: data.place2,
-                address2: data.address2,
-                latitude2: geoLocation2[0],
-                longitude2: geoLocation2[1],
-                time2: data.time2,
-                hint12: data.hint12,
-                hint22: data.hint22,
-                hint32: data.hint32,
-                id: stamptitle._key.path.segments[1]
-
-            })
-
-
-
-            for (let i = 0; i < selectGenre.length; i++) {
-
-
-                console.log([selectGenre[i].label])
-
-
-
-                const genreconnect = await addDoc(collection(db, "genreconnect"), {
-
-                    genre: selectGenre[i].label,
-                    id: stamptitle._key.path.segments[1]
-                }
-                )
-
-                console.log(genreconnect)
+        uploadBytes(imageRef, image).then(
+            (snapshot) => {
+                console.log("Uploaded a file!");
 
             }
+        );
 
-            setLoading(false)
-            // 
+        console.log(selectGenre)
 
-            return (
-                <h1>登録しました</h1>
+
+
+        const stampref = collection(db, "stamptitle",)
+        await getDocs(stampref)
+
+        console.log(stampref.id)
+
+
+        const stamptitle = await addDoc(collection(db, "stamptitle"), {
+            region: data.region,
+            title: data.title,
+            wayto: data.wayto,
+
+            timestamp: serverTimestamp(),
+
+        })
+
+        console.log(stamptitle)
+
+        const stamprally1 = await setDoc(doc(db, "stamprally", stamptitle._key.path.segments[1]), {
+            place1: data.place1,
+            address1: data.address1,
+            latitude1: coordinates[1],
+            longitude1: coordinates[0],
+            time1: data.time1,
+            hint11: data.hint11,
+            hint21: data.hint21,
+            hint31: data.hint31,
+
+            id: stamptitle._key.path.segments[1]
+        })
+
+        const stamprally2 = await setDoc(doc(db, "stamprally2", stamptitle._key.path.segments[1]), {
+            place2: data.place2,
+            address2: data.address2,
+            latitude2: coordinates2[1],
+            longitude2: coordinates2[0],
+            time2: data.time2,
+            hint12: data.hint12,
+            hint22: data.hint22,
+            hint32: data.hint32,
+            id: stamptitle._key.path.segments[1]
+
+        })
+
+
+
+        for (let i = 0; i < selectGenre.length; i++) {
+
+
+            console.log([selectGenre[i].label])
+
+
+
+            const genreconnect = await addDoc(collection(db, "genreconnect"), {
+
+                genre: selectGenre[i].label,
+                id: stamptitle._key.path.segments[1]
+            }
             )
+
+            console.log(genreconnect)
+
         }
 
+        setLoading(false)
+        // 
+
+        alert("登録しました")
+    }
 
 
 
+        
+ 
 
     // useEffect(() => {
     //     onAuthStateChanged(auth, (currentUser) => {
@@ -421,8 +421,9 @@ export const Making = () => {
                         </label>
                     </div>
                 </div>
-                <button type="submit" className="rounded border" onClick>登録</button>
+                <button type="submit" className="rounded border border-gray-300 hover:border-indigo-500" onClick>登録</button>
             </form>
+            <Link to={`/mypage/`} className="hover:text-indigo-500">マイページへ戻る</Link>
             {/* </>)}
             </>} */}
         </>
