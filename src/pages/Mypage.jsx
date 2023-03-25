@@ -5,6 +5,7 @@ import { useNavigate, Navigate, Link } from "react-router-dom";
 // import { Choice } from "./pages/Choice";
 // import { Making } from "./pages/Making";
 
+const button ="mb-2 p-1 border rounded-lg w-max hover:text-gray-600 hover:border-gray-500"
 
 
 export const Mypage = () => {
@@ -32,10 +33,11 @@ export const Mypage = () => {
                     {!user ? (<Navigate to="/login" />)
                         : (<>
                             <h1>マイページ</h1>
-                            <p>こんにちは{user?.displayName}</p>
-                            <Link to={`/choice/`}>スタンプラリーで遊ぶ</Link>
-                            <Link to={`/making/`}>スタンプラリー作成</Link>
-                            <button onClick={logout}>ログアウト</button>
+                            <p className="pb-5">こんにちは{user?.displayName}さん</p>
+                        <div className={button}> <Link to={`/choice/`} >スタンプラリーで遊ぶ</Link></div>    
+                       <div className={button}>       <Link to={`/making/`}>スタンプラリー作成</Link></div>
+                     
+                        <button className="p-1 border rounded-lg hover:border-gray-500" onClick={logout}>ログアウト</button>
 
                         </>)}
                 </>}

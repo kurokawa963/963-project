@@ -52,12 +52,11 @@ export const Making = () => {
     // console.log(image);
 
 
-
     const onSubmit = async (data) => {
-
+ 
 
         //「国土地理院API」でキーワードから緯度・経度を含む住所情報を取得
-   
+
         const url = `https://msearch.gsi.go.jp/address-search/AddressSearch?q=${data.address1}`
         const response = await axios.get(url);
         // const results = await response.json()
@@ -78,7 +77,7 @@ export const Making = () => {
 
 
         // console.log(geoLocation2[0])
-        
+
 
         const imageRef = ref(storage, "image/" + image.name);
 
@@ -138,23 +137,22 @@ export const Making = () => {
 
 
 
-        for (let i = 0; i < selectGenre.length; i++) {
+        const genreConnects = selectGenre.map(obj => obj.label)
+
+        console.log(genreConnects)
 
 
-            console.log([selectGenre[i].label])
 
+        const genreconnect = await addDoc(collection(db, "genreconnect"), {
+            timestamp: serverTimestamp(),
 
-
-            const genreconnect = await addDoc(collection(db, "genreconnect"), {
-
-                genre: selectGenre[i].label,
-                id: stamptitle._key.path.segments[1]
-            }
-            )
-
-            console.log(genreconnect)
-
+            genre: genreConnects,
+            id: stamptitle._key.path.segments[1]
         }
+        )
+
+        console.log(genreconnect)
+
 
         setLoading(false)
         // 
@@ -164,15 +162,15 @@ export const Making = () => {
 
 
 
-        
- 
 
-    // useEffect(() => {
-    //     onAuthStateChanged(auth, (currentUser) => {
-    //         setUser(currentUser);
 
-    //     });
-    // }, []);
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+
+        });
+    }, []);
 
     if (loading) {
         return <p>now loading...</p>
@@ -182,20 +180,21 @@ export const Making = () => {
 
     return (
 
-        // <>
-        //     {!user ? (
-        //         <Navigate to="/login" />
-        //     ) : (
+        <>
+            {!user ? (
+                <Navigate to="/login" />
+            ) : (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <p className="m-2">スタンプラリーを作る</p>
+                <p className="m-2 bg-indigo-700 text-white border rounded-lg border-indigo-700  w-max p-1">スタンプラリーを作る</p>
                 <div className="m-2">
                     <div >
-                        <label htmlFor="">スタンプラリータイトル
+                        <label htmlFor="">スタンプラリータイトル(10文字以内)
                             <input className={input}
                                 type="text"
                                 id="title"
                                 {...register('title', { required: true })}
+                                maxlength="10"
                             />
                         </label>
                     </div>
@@ -271,8 +270,8 @@ export const Making = () => {
                         </label>
                     </div>
                     <div>
-                        <label htmlFor="">ジャンル</label>
-                        <Select
+                        <label htmlFor="" >ジャンル</label>
+                        <Select className="w-max"
                             options={genres}
                             onChange={(value) => {
                                 value ? setSelectGenre([...value]) : null
@@ -288,7 +287,9 @@ export const Making = () => {
 
                     </div>
                 </div>
-                <div className="m-2">チェックポイント①
+                <div className="m-2">
+                    <div className="mb-1 border rounded-lg border-indigo-700 w-max p-1">チェックポイント①</div>
+                    
                     <div>
                         <label htmlFor="">場所の名前
                             <input className={input}
@@ -332,6 +333,7 @@ export const Making = () => {
                     </div>
                     <div>
                         <label htmlFor="">ヒント①
+                            
                             <input className={input}
                                 id="hint11"
                                 {...register('hint11', { required: true })}
@@ -355,8 +357,8 @@ export const Making = () => {
                         </label>
                     </div>
                 </div>
-                <div className="m-2">チェックポイント②
-                    <div>
+                <div className="m-2">
+                    <div className="mb-1 border rounded-lg border-indigo-700 w-max p-1 ">チェックポイント②</div>                    <div>
                         <label htmlFor="">場所の名前
                             <input className={input}
                                 id="place2"
@@ -390,7 +392,7 @@ export const Making = () => {
 
                     <div>
                         <label htmlFor="">写真
-                            {/* <input type="file" onChange={handleChange} /> */}
+                            <input type="file" onChange={handleChange} />
                         </label>
                     </div>
                     <div>
@@ -424,8 +426,8 @@ export const Making = () => {
                 <button type="submit" className="rounded border border-gray-300 hover:border-indigo-500" onClick>登録</button>
             </form>
             <Link to={`/mypage/`} className="hover:text-indigo-500">マイページへ戻る</Link>
-            {/* </>)}
-            </>} */}
+            </>)}
+
         </>
     )
 } 
