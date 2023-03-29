@@ -36,24 +36,31 @@ export const Making = () => {
     const [ok, setOk] = useState(false)
     const [geoLocation, setGeoLocation] = useState()
     const [geoLocation2, setGeoLocation2] = useState()
+    const [maplat1, setMaplat1] = useState()
+    const [maplng1, setMaplng1] = useState()
+
     const [selectGenre, setSelectGenre] = useState();
     const { register, handleSubmit } = useForm({
         shouldUnregister: false,
     });
-    const [defaultLatLng, setDefaultLatLng]=useState()
+    const [defaultLatLng, setDefaultLatLng] = useState()
+    const [map, setMap] = useState(null);
+    const [maps, setMaps] = useState(null);
+    const [marker, setMarker] = useState(null);
+
     // const[success,setSuccess]=useState(false)
 
-   
+
 
     const success = async (position) => {
         const { latitude, longitude } = position.coords;
         setGeoLocation({ latitude, longitude });
- setDefaultLatLng({
-        lat: latitude,
-        lng: longitude,
- });
+        setDefaultLatLng({
+            lat: latitude,
+            lng: longitude,
+        });
         console.log(defaultLatLng)
-}
+    }
 
     const fail = (error) => console.log(error);
 
@@ -61,6 +68,32 @@ export const Making = () => {
         navigator.geolocation.getCurrentPosition(success, fail);
         console.log("catch!")
     }, []);
+
+    const handleApiLoaded = (object) => {
+        setMap(object.map);
+        setMaps(object.maps);
+    };
+
+
+    const setLatLng = ({ x, y, lat, lng, event }) => {
+        console.log(lat);
+        console.log(lng);
+        setMaplat1(lat)
+        setMaplng1(lng)
+        if (marker) {
+            marker.setMap(null);
+        }
+        const latLng = {
+            lat,
+            lng,
+        };
+        setMarker(new maps.Marker({
+            map,
+            position: latLng,
+        }));
+        map.panTo(latLng);
+
+    };
 
 
     const [image, setImage] = useState();
@@ -132,8 +165,8 @@ export const Making = () => {
         const stamprally1 = await setDoc(doc(db, "stamprally", stamptitle._key.path.segments[1]), {
             place1: data.place1,
             address1: data.address1,
-            latitude1: coordinates[1],
-            longitude1: coordinates[0],
+            latitude1: maplat1,
+            longitude1: maplng1,
             time1: data.time1,
             hint11: data.hint11,
             hint21: data.hint21,
@@ -327,15 +360,29 @@ export const Making = () => {
                                                 {...register('place1', { required: true })} />
                                         </label>
                                     </div>
-                                    <div className="" style={{ height: '300px', width: '300px' }}>
-                                        <GoogleMapReact
-                                        bootstrapURLKeys={{ key: import.meta.env.VITE_NEXT_PUBLIC_GOOGLE_MAP_KEY }}
-                                        defaultCenter={defaultLatLng}
-                                        defaultZoom={16}
-                                        // onClick={setLatLng}
-                                    />
+                                    <div>
+
+                                        <label htmlFor="">写真
+                                            <input type="file" onChange={handleChange} />
+
+                                        </label>
+
+
                                     </div>
                                     <div>
+                                        撮影場所
+                                        <div className="w-60 h-60">
+                                            <GoogleMapReact
+                                                bootstrapURLKeys={{ key: import.meta.env.VITE_NEXT_PUBLIC_GOOGLE_MAP_KEY }}
+                                                defaultCenter={defaultLatLng}
+                                                defaultZoom={16}
+                                                onClick={setLatLng}
+                                                onGoogleApiLoaded={handleApiLoaded}
+
+                                            />
+                                        </div>
+                                    </div>
+                                    {/* <div>
                                         <label htmlFor="">住所
                                             <input className={input}
                                                 type="text"
@@ -343,7 +390,7 @@ export const Making = () => {
                                                 {...register('address1', { required: true })}
                                             />
                                         </label>
-                                    </div>
+                                    </div> */}
                                     <div>
                                         <label htmlFor="">行くといい時間帯
                                             <select className={input}
@@ -359,15 +406,7 @@ export const Making = () => {
                                         </label>
                                     </div>
 
-                                    <div>
 
-                                        <label htmlFor="">写真
-                                            <input type="file" onChange={handleChange} />
-
-                                        </label>
-
-
-                                    </div>
                                     <div>
                                         <label htmlFor="">ヒント①
 
