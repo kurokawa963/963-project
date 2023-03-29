@@ -33,7 +33,7 @@ export const Mypage = () => {
                     {!user ? (<Navigate to="/login" />)
                         : (<>
                             <h1>マイページ</h1>
-                            <p className="pb-5">こんにちは{user?.displayName}さん</p>
+                            <p className="pb-5">こんにちは、{user?.displayName}さん</p>
                         <div className={button}> <Link to={`/choice/`} >スタンプラリーで遊ぶ</Link></div>    
                        <div className={button}>       <Link to={`/making/`}>スタンプラリー作成</Link></div>
                      

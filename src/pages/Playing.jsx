@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams,useNavigate,Navigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 // useParamsでidを取ってくる
 import { db } from "../firebase";
 import { auth } from "../firebase"
@@ -7,7 +7,7 @@ import { auth } from "../firebase"
 import { onAuthStateChanged, signOut } from "firebase/auth"
 
 
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, serverTimestamp,addDoc,collection } from "firebase/firestore";
 
 const button = "rounded border border-gray - 300 hover: border - indigo - 500"
 const tf = "hidden"
@@ -44,7 +44,7 @@ export const Playing = () => {
     // console.log(lat)
     // 
     // useEffect(() => {
-   
+
     // }, []);
 
 
@@ -56,11 +56,11 @@ export const Playing = () => {
 
     useEffect(() => {
 
-     onAuthStateChanged(auth, (currentUser) => {
+        onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
 
-     },[]);
-        
+        }, []);
+
         const docRef = doc(db, "stamprally", id);
         getDoc(docRef).then((documentSnapshot) => {
 
@@ -121,13 +121,13 @@ export const Playing = () => {
             console.log(lon1)
             if (lat1 > -0.0008 && lat1 < 0.0008 && lon1 > -0.0008 && lon1 < 0.0008) {
 
-                console.log("成功")
+                alert("せいかい！")
                 setTf("hidden")
                 setCorrect1(true)
             }
 
             else {
-                console.log("ちがいまーす")
+                alert("ちがいまーす")
 
             }
         }
@@ -151,14 +151,14 @@ export const Playing = () => {
             console.log(lon2)
             if (lat2 > -0.0008 && lat2 < 0.0008 && lon2 > -0.0008 && lon2 < 0.0008) {
 
-                console.log("成功")
+                alert("せいかい")
                 setTf2("hidden")
                 setCorrect2(true)
 
             }
 
             else {
-                console.log("ちがいまーす")
+                alert("ちがいまーす")
 
 
             }
@@ -189,7 +189,7 @@ export const Playing = () => {
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(success, fail, options);
         console.log("catch!")
-    }, [count]);
+    }, []);
 
 
 
@@ -199,9 +199,22 @@ export const Playing = () => {
     }
 
     if (correct1 === true && correct2 === true) {
-        return <p>
-            クリア！
-        </p>
+        const archives =
+            addDoc(collection(db, "archives"), {
+                stamprally,
+                stamprally2,
+
+                timestamp: serverTimestamp(),
+                id: user.uid
+
+            })
+
+        return (
+            <Navigate to="/clear" />
+        )
+        // <p>
+        //     クリア！
+        // </p>
 
     }
 
@@ -210,40 +223,41 @@ export const Playing = () => {
         <>
             {!user ? (<Navigate to="/login" />)
                 : (<>
+                    <div className={tf}>
+                        <table className="border-b-2 border-dotted"  >
 
-                    <table className="{tf} border-b-2 border-dotted">
+                            <tr>チェックポイント①</tr>
 
-                        <tr>チェックポイント①</tr>
+                            <tr>ベストタイミング：{stamprally.time1}</tr>
+                            <tr>ヒント</tr>
+                            <div className="">
 
-                        <tr>ベストタイミング：{stamprally.time1}</tr>
-                        <tr>ヒント</tr>
-                        <div className="">
+                                <div>「{stamprally.hint11}」</div>
+                                <div>「{stamprally.hint21}」</div>
+                                <div>「{stamprally.hint31}」</div>
 
-                            <div>「{stamprally.hint11}」</div>
-                            <div>「{stamprally.hint21}」</div>
-                            <div>「{stamprally.hint31}」</div>
- 
-                        </div>
+                            </div>
 
-                        <button className={button} onClick={getCurrentPosition1}>ここだ！</button>
+                            <button className={button} onClick={getCurrentPosition1}>ここだ！</button>
+                        </table>
+                    </div>
+                    <div className={tf2}>
+                        <table className="{tf2} border-b-2 border-dotted">
+                            <tr>チェックポイント②</tr>
+                            <tr>ベストタイミング：{stamprally2.time2}</tr>
 
-                    </table>
-                    <table className="{tf2} border-b-2 border-dotted">
-                        <tr>チェックポイント②</tr>
-                        <tr>ベストタイミング：{stamprally2.time2}</tr>
+                            <tr>ヒント</tr>
+                            <div className="">
 
-                        <tr>ヒント</tr>
-                        <div className="">
+                                <div>「{stamprally2.hint12}」</div>
+                                <div>「{stamprally2.hint22}」</div>
+                                <div>「{stamprally2.hint32}」</div>
 
-                            <div>「{stamprally2.hint12}」</div>
-                            <div>「{stamprally2.hint22}」</div>
-                            <div>「{stamprally2.hint32}」</div>
+                            </div>
+                            <button className={button} onClick={getCurrentPosition2}>ここだ！</button>
 
-                        </div>
-                        <button className={button} onClick={getCurrentPosition2}>ここだ！</button>
-
-                    </table>
-
+                        </table>
+                    </div>
                 </>)}
         </>)
 }
