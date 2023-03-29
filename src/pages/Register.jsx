@@ -38,7 +38,7 @@ export const Register = () => {
     // const [genre, setGenre] = useState("");
     // const [email, setEmail] = useState("");
 
-  const [selectGenre, setSelectGenre] = useState(genres[0]);
+  const [selectGenre, setSelectGenre] = useState([]);
 
     const { register, handleSubmit, setValue } = useForm({
         shouldUnregister: false,
@@ -54,6 +54,7 @@ export const Register = () => {
     const onSubmit = async (e) => {
         e.preventDefault();
 
+        const genres=selectGenre.map(obj=>obj.label)
 
         try {
             const res = await createUserWithEmailAndPassword(
@@ -75,7 +76,7 @@ export const Register = () => {
                     name: res.user.displayName,
                     email: res.user.email,
                     uid: res.user.uid,
-                    genre:selectGenre
+                    genre:genres
                 });
 
                 // await setDoc(doc(db, "user"))
@@ -128,8 +129,11 @@ export const Register = () => {
 
     return (
         <>
-            {user ? (
-                <Navigate to={`/Mypage`} />
+            {user ? (<>
+                <h1>登録しました！</h1>
+                <p className="border-b border-indigo-600 w-max"><Link to={`/Mypage`}>マイページへ</Link></p>
+             
+            </>
             ) : (
                 <>
                     <h1>新規登録</h1>
@@ -173,6 +177,7 @@ export const Register = () => {
                         <div>
                             <label htmlFor="">よく行くジャンル</label>
                                 <Select
+                                    className="w-max"
                                     options={genres}
                                     onChange={(value) => {
                                         value ? setSelectGenre([...value]) : null
