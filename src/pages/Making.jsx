@@ -29,15 +29,22 @@ const genres = [
     { value: "8", label: "夜遊び" },
 ];
 
+
+
+
 export const Making = () => {
 
     const [user, setUser] = useState("");
     const [loading, setLoading] = useState(true);
+    const [subloading, setSubloading] = useState(true);
     const [ok, setOk] = useState(false)
     const [geoLocation, setGeoLocation] = useState()
     const [geoLocation2, setGeoLocation2] = useState()
     const [maplat1, setMaplat1] = useState()
     const [maplng1, setMaplng1] = useState()
+    const [maplat2, setMaplat2] = useState()
+    const [maplng2, setMaplng2] = useState()
+
 
     const [selectGenre, setSelectGenre] = useState();
     const { register, handleSubmit } = useForm({
@@ -45,14 +52,20 @@ export const Making = () => {
     });
     const [defaultLatLng, setDefaultLatLng] = useState()
     const [map, setMap] = useState(null);
+    const [map2, setMap2] = useState(null);
+
     const [maps, setMaps] = useState(null);
+    const [maps2, setMaps2] = useState(null);
+
     const [marker, setMarker] = useState(null);
+    const [marker2, setMarker2] = useState(null);
+
 
     // const[success,setSuccess]=useState(false)
 
 
 
-    const success = async (position) => {
+    const success = (position) => {
         const { latitude, longitude } = position.coords;
         setGeoLocation({ latitude, longitude });
         setDefaultLatLng({
@@ -60,6 +73,7 @@ export const Making = () => {
             lng: longitude,
         });
         console.log(defaultLatLng)
+        setSubloading(false)
     }
 
     const fail = (error) => console.log(error);
@@ -69,10 +83,21 @@ export const Making = () => {
         console.log("catch!")
     }, []);
 
-    const handleApiLoaded = (object) => {
-        setMap(object.map);
-        setMaps(object.maps);
+    const handleMapTypeChange = () => {
+        const newMapTypeId =
+            map.getMapTypeId() === 'roadmap'
+                ? google.maps.MapTypeId.SATELLITE
+                : google.maps.MapTypeId.ROADMAP;
+        map.setMapTypeId(newMapTypeId);
     };
+
+
+    const handleApiLoaded = (map, maps) => {
+        setMap(map);
+        setMaps(maps);
+
+    };
+
 
 
     const setLatLng = ({ x, y, lat, lng, event }) => {
@@ -95,6 +120,38 @@ export const Making = () => {
 
     };
 
+    const handleApiLoaded2 = (obj) => {
+        setMap2(obj.map2);
+        setMaps2(obj.maps2);
+
+    };
+    const handleMapTypeChange2 = () => {
+        const newMapTypeId =
+            map.getMapTypeId() === 'roadmap'
+                ? google.maps.MapTypeId.SATELLITE
+                : google.maps.MapTypeId.ROADMAP;
+        map.setMapTypeId(newMapTypeId);
+    };
+
+    const setLatLng2 = ({ x, y, lat, lng, event }) => {
+        console.log(lat);
+        console.log(lng);
+        setMaplat2(lat)
+        setMaplng2(lng)
+        if (marker2) {
+            marker2.setMap(null);
+        }
+        const latLng2 = {
+            lat,
+            lng,
+        };
+        setMarker2(new maps2.Marker({
+            map2,
+            position: latLng2,
+        }));
+        map2.panTo(latLng2);
+
+    };
 
     const [image, setImage] = useState();
     const handleChange = (e) => {
@@ -239,6 +296,11 @@ export const Making = () => {
             </div>
         </>)
     }
+
+    if (subloading) {
+        return <p>now loading...</p>;
+    }
+
     return (
         <>
             {!loading &&
@@ -371,16 +433,22 @@ export const Making = () => {
                                     </div>
                                     <div>
                                         撮影場所
-                                        <div className="w-60 h-60">
+                                        <div className="w-100% h-60">
                                             <GoogleMapReact
-                                                bootstrapURLKeys={{ key: import.meta.env.VITE_NEXT_PUBLIC_GOOGLE_MAP_KEY }}
+                                                bootstrapURLKeys={{
+                                                    key: import.meta.env.VITE_NEXT_PUBLIC_GOOGLE_MAP_KEY,
+                                                    libraries: 'drawing',
+                                                    options: { mapTypeId: google.maps.MapTypeId.SATELLITE },
+                                                }}
                                                 defaultCenter={defaultLatLng}
-                                                defaultZoom={16}
+                                                defaultZoom={13}
                                                 onClick={setLatLng}
-                                                onGoogleApiLoaded={handleApiLoaded}
-
+                                                onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
+                                                yesIWantToUseGoogleMapApiInternals
                                             />
                                         </div>
+                                        <div onClick={handleMapTypeChange}>航空写真に切り替え</div>
+
                                     </div>
                                     {/* <div>
                                         <label htmlFor="">住所
@@ -451,6 +519,24 @@ export const Making = () => {
 
                                         </label>
                                     </div>
+                                    <div>
+                                        撮影場所
+                                        <div className="w-100% h-60">
+                                            <GoogleMapReact
+                                                bootstrapURLKeys={{
+                                                    key: import.meta.env.VITE_NEXT_PUBLIC_GOOGLE_MAP_KEY,
+                                                    libraries: 'drawing',
+                                                    options: { mapTypeId: google.maps.MapTypeId.SATELLITE },
+                                                }}
+                                                defaultCenter={defaultLatLng}
+                                                defaultZoom={13}
+                                                onClick={setLatLng2}
+                                                onGoogleApiLoaded={({ map, maps }) => handleApiLoaded2(map, maps)}
+                                                yesIWantToUseGoogleMapApiInternals
+                                            />
+                                        </div>
+                                        <div onClick={handleMapTypeChange2}>航空写真に切り替え</div>
+                                        </div>
                                     <div>
                                         <label htmlFor="">行くといい時間帯
                                             <select className={input}
