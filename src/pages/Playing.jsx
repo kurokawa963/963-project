@@ -189,7 +189,7 @@ export const Playing = () => {
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(success, fail, options);
         console.log("catch!")
-    }, []);
+    }, [count]);
 
 
 

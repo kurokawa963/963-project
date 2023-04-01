@@ -6,7 +6,7 @@ import { auth } from "../firebase";
 import { db, storage } from "../firebase";
 import { ref, getDownloadURL, uploadBytes, getStorage } from "firebase/storage";
 
-import { collection, addDoc, serverTimestamp, setDoc, doc, getDocs } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, setDoc, doc, getDocs, updateDoc } from "firebase/firestore";
 import Select from "react-select";
 import genresJson from "../static/genres.json"
 import GoogleMapReact from "google-map-react"
@@ -40,20 +40,20 @@ export const Making = () => {
     const { register, handleSubmit } = useForm({
         shouldUnregister: false,
     });
-    const [defaultLatLng, setDefaultLatLng]=useState()
+    const [defaultLatLng, setDefaultLatLng] = useState()
     // const[success,setSuccess]=useState(false)
 
-   
+
 
     const success = async (position) => {
         const { latitude, longitude } = position.coords;
         setGeoLocation({ latitude, longitude });
- setDefaultLatLng({
-        lat: latitude,
-        lng: longitude,
- });
+        setDefaultLatLng({
+            lat: latitude,
+            lng: longitude,
+        });
         console.log(defaultLatLng)
-}
+    }
 
     const fail = (error) => console.log(error);
 
@@ -113,21 +113,26 @@ export const Making = () => {
 
 
         const stampref = collection(db, "stamptitle",)
-        await getDocs(stampref)
+        // await getDocs(stampref)
 
-        console.log(stampref.id)
+        // console.log(stampref.id)
 
 
         const stamptitle = await addDoc(collection(db, "stamptitle"), {
             region: data.region,
             title: data.title,
             wayto: data.wayto,
-            id: id,
             timestamp: serverTimestamp(),
 
         })
 
         console.log(stamptitle)
+
+        const stamptitleid = stamptitle.id
+        await updateDoc(doc(stampref, stamptitleid), {
+            id: stamptitleid
+        })
+
 
         const stamprally1 = await setDoc(doc(db, "stamprally", stamptitle._key.path.segments[1]), {
             place1: data.place1,
@@ -314,42 +319,42 @@ export const Making = () => {
 
                                         />
 
-                    </div>
-                </div>
-                <div className="m-2">
-                    <div className="mb-1 border rounded-lg border-indigo-700 w-max p-1">チェックポイント①</div>
-                    
-                    <div>
-                        <label htmlFor="">場所の名前
-                            <input className={input}
-                                type="text"
-                                id="place1"
-                                {...register('place1', { required: true })} />
-                        </label>
-                    </div>
-                    <div>
-                        <label htmlFor="">住所
-                            <input className={input}
-                                type="text"
-                                id="address1"
-                                {...register('address1', { required: true })}
-                            />
-                        </label>
-                    </div>
-                    <div>
-                        <label htmlFor="">行くといい時間帯
-                            <select className={input}
-                                type="text"
-                                id="time1"
-                                {...register('time1', { required: true })}>
-                                <option value=""></option>
-                                <option value="午前">午前</option>
-                                <option value="お昼">お昼</option>
-                                <option value="夕方">夕方</option>
-                                <option value="夜">夜</option>
-                            </select>
-                        </label>
-                    </div>
+                                    </div>
+                                </div>
+                                <div className="m-2">
+                                    <div className="mb-1 border rounded-lg border-indigo-700 w-max p-1">チェックポイント①</div>
+
+                                    <div>
+                                        <label htmlFor="">場所の名前
+                                            <input className={input}
+                                                type="text"
+                                                id="place1"
+                                                {...register('place1', { required: true })} />
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">住所
+                                            <input className={input}
+                                                type="text"
+                                                id="address1"
+                                                {...register('address1', { required: true })}
+                                            />
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="">行くといい時間帯
+                                            <select className={input}
+                                                type="text"
+                                                id="time1"
+                                                {...register('time1', { required: true })}>
+                                                <option value=""></option>
+                                                <option value="午前">午前</option>
+                                                <option value="お昼">お昼</option>
+                                                <option value="夕方">夕方</option>
+                                                <option value="夜">夜</option>
+                                            </select>
+                                        </label>
+                                    </div>
 
                                     <div>
 
