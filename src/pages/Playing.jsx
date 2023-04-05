@@ -119,7 +119,7 @@ export const Playing = () => {
             //         const lon = -0.0009;
             console.log(lat1);
             console.log(lon1)
-            if (lat1 > -0.0008 && lat1 < 0.0008 && lon1 > -0.0008 && lon1 < 0.0008) {
+            if (lat1 > -0.0002 && lat1 < 0.0002 && lon1 > -0.0002 && lon1 < 0.0002) {
 
                 alert("せいかい！")
                 setTf("hidden")
@@ -149,9 +149,9 @@ export const Playing = () => {
             //         const lon = -0.0009;
             console.log(lat2);
             console.log(lon2)
-            if (lat2 > -0.0008 && lat2 < 0.0008 && lon2 > -0.0008 && lon2 < 0.0008) {
+            if (lat2 > -0.0002 && lat2 < 0.0002 && lon2 > -0.0002 && lon2 < 0.0002) {
 
-                alert("せいかい")
+                alert("せいかい！")
                 setTf2("hidden")
                 setCorrect2(true)
 
@@ -189,7 +189,7 @@ export const Playing = () => {
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(success, fail, options);
         console.log("catch!")
-    }, []);
+    }, [count]);
 
 
 
