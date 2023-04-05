@@ -41,7 +41,7 @@ export const Archives = () => {
                 ({ ...x.data(), id: x.id })))
             setSubLoading(false);
 
-         
+
 
         })
 
@@ -67,9 +67,9 @@ export const Archives = () => {
         // });
     }, []);
 
-//    if (archive === []) {
-//                 setNoarchive(false)
-//             }
+    //    if (archive === []) {
+    //                 setNoarchive(false)
+    //             }
 
     useEffect(() => {
         onAuthStateChanged(auth, (currentUser) => {
@@ -101,10 +101,11 @@ export const Archives = () => {
                     <>
                         <p>アーカイブ</p>
                         {archive.map((x, i) => (
-                            <tr key={i}>
-                                <td>{x.stamprally.place1}</td>
+                            <div key={i} className="border rounded-lg w-max p-1 mb-2">
+                                <div>{x.stamprally.place1}</div>
+                                <div>{x.stamprally2.place2}</div>
                                 <p></p>
-                            </tr>
+                            </div>
                         ))}
                     </>
                 ) : (

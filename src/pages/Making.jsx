@@ -53,6 +53,7 @@ export const Making = () => {
         shouldUnregister: false,
     });
     const [defaultLatLng, setDefaultLatLng] = useState()
+
     const [map, setMap] = useState(null);
     const [map2, setMap2] = useState(null);
 
@@ -67,6 +68,7 @@ export const Making = () => {
 
 
 
+
     const success = (position) => {
         const { latitude, longitude } = position.coords;
         setGeoLocation({ latitude, longitude });
@@ -75,7 +77,9 @@ export const Making = () => {
             lng: longitude,
         });
         console.log(defaultLatLng)
+
         setSubloading(false)
+
     }
 
     const fail = (error) => console.log(error);
@@ -281,7 +285,7 @@ export const Making = () => {
         // setLoading(false)
         // 
 
-        alert("登録しました")
+        // alert("登録しました")
         setOk(true)
 
     }
@@ -404,6 +408,8 @@ export const Making = () => {
                                                 <option value="車">車</option>
                                                 <option value="電車">電車orバス</option>
                                                 <option value="自転車">自転車</option>
+                                                <option value="飛行機">飛行機</option>
+                                                <option value="船">船</option>
                                             </select>
                                         </label>
                                     </div>
@@ -422,7 +428,7 @@ export const Making = () => {
                                             id="genre"
 
                                         />
-
+                                        ※複数選択可
                                     </div>
                                 </div>
                                 <div className="m-2">
@@ -436,6 +442,7 @@ export const Making = () => {
                                                 {...register('place1', { required: true })} />
                                         </label>
                                     </div>
+
                                     <div>
 
                                         <label htmlFor="">写真
@@ -445,6 +452,7 @@ export const Making = () => {
 
 
                                     </div>
+
                                     <div>
                                         <div>撮影場所（チェックポイント）</div>
                                         <div>地図をタップして撮影場所にマーカーを付けてください</div>
@@ -620,12 +628,14 @@ export const Making = () => {
                                         </label>
                                     </div>
                                 </div>
+
                                 <button type="submit" className="rounded border border-gray-300 hover:border-indigo-500">登録</button>
                             </form>
                             <div>登録に数秒かかります。</div>
                             <div className="pb-5 border-b-2 border-indigo-600 border-dotted ">登録ボタンは２回押さないでください！！</div>
                             <div className="mb-5"></div>
                             <Link to={`/mypage/`} className="hover:text-indigo-500">マイページへ戻る</Link>
+
                         </>)}
 
                 </>}
