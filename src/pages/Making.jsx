@@ -37,6 +37,7 @@ const genres = [
 export const Making = () => {
 
     const [user, setUser] = useState("");
+    const [isApiLoaded, setIsApiLoaded] = useState(false);
     const [loading, setLoading] = useState(true);
     const [subloading, setSubloading] = useState(true);
     const [ok, setOk] = useState(false)
@@ -164,10 +165,16 @@ export const Making = () => {
     };
 
     const [image, setImage] = useState();
+    const [image2, setImage2] = useState();
+    const [url, setUrl] = useState();
+
     const handleChange = (e) => {
         setImage(e.target.files[0]);
     };
 
+    const handleChange2 = (e) => {
+        setImage2(e.target.files[0]);
+    };
 
     // console.log(image);
 
@@ -200,19 +207,6 @@ export const Making = () => {
 
         // 176～195住所で座標取らなくなったからおっけー
 
-        const imageRef = ref(storage, "image/" + image.name);
-
-        uploadBytes(imageRef, image).then(
-            (snapshot) => {
-                console.log("Uploaded a file!");
-
-            }
-        );
-
-        console.log(selectGenre)
-
-
-
         const stampref = collection(db, "stamptitle",)
         // await getDocs(stampref)
 
@@ -220,48 +214,97 @@ export const Making = () => {
 
 
         const stamptitle = await addDoc(collection(db, "stamptitle"), {
+
             region: data.region,
             title: data.title,
             wayto: data.wayto,
-
             timestamp: serverTimestamp(),
-
         })
 
 
-        console.log(stamptitle)
+        // console.log(stamptitle)
 
         const stamptitleid = stamptitle.id
         await updateDoc(doc(stampref, stamptitleid), {
-            id: stamptitleid
-        })
-
-
-        const stamprally1 = await setDoc(doc(db, "stamprally", stamptitle._key.path.segments[1]), {
-            place1: data.place1,
-            // address1: data.address1,
-            latitude1: maplat1,
-            longitude1: maplng1,
-            time1: data.time1,
-            hint11: data.hint11,
-            hint21: data.hint21,
-            hint31: data.hint31,
-
-            id: stamptitle._key.path.segments[1]
-        })
-
-        const stamprally2 = await setDoc(doc(db, "stamprally2", stamptitle._key.path.segments[1]), {
-            place2: data.place2,
-            // address2: data.address2,
-            latitude2: maplat2,
-            longitude2: maplng2,
-            time2: data.time2,
-            hint12: data.hint12,
-            hint22: data.hint22,
-            hint32: data.hint32,
-            id: stamptitle._key.path.segments[1]
+            id: stamptitleid,
 
         })
+
+
+        const imageRef = ref(storage, "image/" + image.name);
+
+        uploadBytes(imageRef, image).then(
+            (snapshot) => {
+                console.log("Uploaded a file!");
+                getDownloadURL(imageRef).then((url) => {
+                    setDoc(doc(db, "stamprally", stamptitle.id), {
+                        url: url,
+                        place1: data.place1,
+                        // address1: data.address1,
+                        latitude1: maplat1,
+                        longitude1: maplng1,
+                        time1: data.time1,
+                        hint11: data.hint11,
+                        hint21: data.hint21,
+                        hint31: data.hint31,
+
+                        id: stamptitle._key.path.segments[1]
+                    }).then(() => {
+                        console.log("Document successfully written!");
+
+                    }).catch((error) => {
+                        console.error("Error writing document: ", error);
+                    });
+                })
+            }
+
+        );
+
+        const imageRef2 = ref(storage, "image/" + image2.name);
+
+        uploadBytes(imageRef2, image2).then(
+            (snapshot) => {
+                console.log("Uploaded a file!");
+                getDownloadURL(imageRef2).then((url) => {
+                    setDoc(doc(db, "stamprally2", stamptitle.id), {
+                        url: url,
+                        place2: data.place2,
+                        // address2: data.address2,
+                        latitude2: maplat2,
+                        longitude2: maplng2,
+                        time2: data.time2,
+                        hint12: data.hint12,
+                        hint22: data.hint22,
+                        hint32: data.hint32,
+                        id: stamptitle._key.path.segments[1]
+
+
+                    }).then(() => {
+                        console.log("Document successfully written!");
+
+                    }).catch((error) => {
+                        console.error("Error writing document: ", error);
+                    });
+                })
+            }
+
+        );
+
+
+
+        // console.log(selectGenre)
+
+
+
+
+
+        // const stamprally1 = await setDoc(doc(db, "stamprally", stamptitle._key.path.segments[1]), {
+
+        // })
+
+        // const stamprally2 = await setDoc(doc(db, "stamprally2", stamptitle._key.path.segments[1]), {
+
+        // })
 
 
 
@@ -279,7 +322,7 @@ export const Making = () => {
         }
         )
 
-        console.log(genreconnect)
+        // console.log(genreconnect)
 
 
         // setLoading(false)
@@ -298,6 +341,12 @@ export const Making = () => {
     useEffect(() => {
         onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_NEXT_PUBLIC_GOOGLE_MAP_KEY}&libraries=drawing`;
+            script.onload = () => setIsApiLoaded(true);
+            document.body.appendChild(script);
+
+
             setLoading(false);
 
         });
@@ -321,6 +370,7 @@ export const Making = () => {
 
     return (
         <>
+
             {!loading &&
                 <>
                     {!user ? (
@@ -328,7 +378,9 @@ export const Making = () => {
                     ) : (
                         <>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <p className="m-2 bg-indigo-700 text-white border rounded-lg border-indigo-700  w-max p-1">スタンプラリーを作る</p>
+                                <p className="m-2 bg-indigo-700 text-white border rounded-lg border-indigo-700 p-1 text-xl text-center">スタンプラリーを作る</p>
+                                <div className="p-2 mb-6 mx-2 border-2 rounded border-indigo-500">
+
                                 <div className="m-2">
                                     <div >
                                         <label htmlFor="">スタンプラリータイトル(10文字以内)
@@ -429,10 +481,12 @@ export const Making = () => {
 
                                         />
                                         ※複数選択可
-                                    </div>
+                                        </div>
+                                        </div>
                                 </div>
-                                <div className="m-2">
-                                    <div className="mb-1 border rounded-lg border-indigo-700 w-max p-1">チェックポイント①</div>
+                                <div className="">
+                                    <div className="m-2 border rounded-lg border-indigo-700 text-center p-1">チェックポイント①</div>
+                                    <div className="p-2 mb-6 mx-2 border rounded border-indigo-500 ">
 
                                     <div>
                                         <label htmlFor="">場所の名前
@@ -457,28 +511,30 @@ export const Making = () => {
                                         <div>撮影場所（チェックポイント）</div>
                                         <div>地図をタップして撮影場所にマーカーを付けてください</div>
                                         <div>マーカーのついた場所がチェックポイントになります</div>
-                                        <div className="m-auto w-100% h-60">
-                                            <GoogleMapReact
-                                                bootstrapURLKeys={{
-                                                    key: import.meta.env.VITE_NEXT_PUBLIC_GOOGLE_MAP_KEY,
-                                                    libraries: 'drawing',
-                                                    options: { mapTypeId: google.maps.MapTypeId.SATELLITE },
-                                                }}
-                                                defaultCenter={defaultLatLng}
-                                                defaultZoom={13}
-                                                onClick={setLatLng}
-                                                onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-                                                yesIWantToUseGoogleMapApiInternals
-                                            >
+                                        <div className="w-100% h-60">
+                                            {isApiLoaded && (
+                                                <GoogleMapReact
+                                                    bootstrapURLKeys={{
+                                                        key: import.meta.env.VITE_NEXT_PUBLIC_GOOGLE_MAP_KEY,
+                                                        libraries: 'drawing',
+                                                        options: { mapTypeId: google.maps.MapTypeId.SATELLITE },
+                                                    }}
+                                                    defaultCenter={defaultLatLng}
+                                                    defaultZoom={13}
+                                                    onClick={setLatLng}
+                                                    onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
+                                                    yesIWantToUseGoogleMapApiInternals
+                                                >
 
-                                                <Marker lat={maplat1} lng={maplng1}
-                                                    icon={{
-                                                        url: kallomate,
-                                                        // scaledSize: new window.google.maps.Size(10,10),
-                                                        scaledSize: { width: 10, height: 10 }
-                                                    }} />
+                                                    <Marker lat={maplat1} lng={maplng1}
+                                                        icon={{
+                                                            url: kallomate,
+                                                            // scaledSize: new window.google.maps.Size(10,10),
+                                                            scaledSize: { width: 10, height: 10 }
+                                                        }} />
 
-                                            </GoogleMapReact>
+                                                </GoogleMapReact>
+                                            )}
                                         </div>
                                         <div onClick={handleMapTypeChange} className="border w-max p-1 m-1 border-black bg-gray-200">航空写真に切り替え</div>
 
@@ -491,7 +547,7 @@ export const Making = () => {
                                                 {...register('address1', { required: true })}
                                             />
                                         </label>
-                                    </div> */}
+                                                </div>*/}
                                     <div>
                                         <label htmlFor="">行くといい時間帯
                                             <select className={input}
@@ -507,7 +563,7 @@ export const Making = () => {
                                         </label>
                                     </div>
 
-
+                                    <div>ヒントを考えてください</div>
                                     <div>
                                         <label htmlFor="">ヒント①
 
@@ -533,9 +589,12 @@ export const Making = () => {
                                                 type="text" />
                                         </label>
                                     </div>
-                                </div>
-                                <div className="m-2">
-                                    <div className="mb-1 border rounded-lg border-indigo-700 w-max p-1 ">チェックポイント②</div>                    <div>
+                                    </div>
+                                    </div>
+                                <div className="">
+                                    <div className="m-2 border rounded-lg border-indigo-700 text-center p-1">チェックポイント②</div>
+                                    <div className="p-2 m-2 border rounded border-indigo-500">
+                                    <div>
                                         <label htmlFor="">場所の名前
                                             <input className={input}
                                                 id="place2"
@@ -558,25 +617,27 @@ export const Making = () => {
                                         <div>マーカーのついた場所がチェックポイントになります</div>
 
                                         <div className="w-100% h-60">
-                                            <GoogleMapReact
-                                                bootstrapURLKeys={{
-                                                    key: import.meta.env.VITE_NEXT_PUBLIC_GOOGLE_MAP_KEY,
-                                                    libraries: 'drawing',
-                                                    options: { mapTypeId: google.maps.MapTypeId.SATELLITE },
-                                                }}
-                                                defaultCenter={defaultLatLng}
-                                                defaultZoom={13}
-                                                onClick={setLatLng2}
-                                                onGoogleApiLoaded={({ map, maps }) => handleApiLoaded2(map, maps)}
-                                                yesIWantToUseGoogleMapApiInternals
-                                            >
-                                                <Marker lat={maplat2} lng={maplng2}
-                                                    icon={{
-                                                        url: kallomate,
-                                                        // scaledSize: new window.google.maps.Size(10,10),
-                                                        scaledSize: { width: 10, height: 10 }
-                                                    }} />
-                                            </GoogleMapReact>
+                                            {isApiLoaded && (
+                                                <GoogleMapReact
+                                                    bootstrapURLKeys={{
+                                                        key: import.meta.env.VITE_NEXT_PUBLIC_GOOGLE_MAP_KEY,
+                                                        libraries: 'drawing',
+                                                        options: { mapTypeId: google.maps.MapTypeId.SATELLITE },
+                                                    }}
+                                                    defaultCenter={defaultLatLng}
+                                                    defaultZoom={13}
+                                                    onClick={setLatLng2}
+                                                    onGoogleApiLoaded={({ map, maps }) => handleApiLoaded2(map, maps)}
+                                                    yesIWantToUseGoogleMapApiInternals
+                                                >
+                                                    <Marker lat={maplat2} lng={maplng2}
+                                                        icon={{
+                                                            url: kallomate,
+                                                            // scaledSize: new window.google.maps.Size(10,10),
+                                                            scaledSize: { width: 10, height: 10 }
+                                                        }} />
+                                                </GoogleMapReact>
+                                            )}
                                         </div>
                                         <div onClick={handleMapTypeChange2} className="border w-max p-1 m-1 border-black bg-gray-200">航空写真に切り替え</div>
                                     </div>
@@ -597,7 +658,7 @@ export const Making = () => {
 
                                     <div>
                                         <label htmlFor="">写真
-                                            <input type="file" onChange={handleChange} />
+                                            <input type="file" onChange={handleChange2} />
                                         </label>
                                     </div>
                                     <div>
@@ -628,14 +689,18 @@ export const Making = () => {
                                         </label>
                                     </div>
                                 </div>
-
-                                <button type="submit" className="rounded border border-gray-300 hover:border-indigo-500">登録</button>
+                                </div>
+                                <div className="text-center">
+                                <button type="submit" className="border border-indigo-500 rounded p-1 m-1 bg-indigo-500 text-white ">登録</button>
+                            </div>
                             </form>
-                            <div>登録に数秒かかります。</div>
+                            <div className="m-2">
+                            <div>登録完了画面に変わるまで数秒かかることがあります。</div>
                             <div className="pb-5 border-b-2 border-indigo-600 border-dotted ">登録ボタンは２回押さないでください！！</div>
-                            <div className="mb-5"></div>
-                            <Link to={`/mypage/`} className="hover:text-indigo-500">マイページへ戻る</Link>
-
+</div>
+                            <div className="flex-end ml-auto mr-2 w-max mb-3 border-b-2 border-indigo-500">
+                            <Link to={`/mypage/`} className="hover:text-indigo-500 ">マイページへ戻る</Link>
+</div>
                         </>)}
 
                 </>}

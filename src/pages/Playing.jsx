@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, Navigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate,Link } from "react-router-dom";
 // useParamsでidを取ってくる
 import { db } from "../firebase";
 import { auth } from "../firebase"
@@ -13,9 +13,12 @@ const button = "rounded border border-gray - 300 hover: border - indigo - 500"
 const tf = "hidden"
 
 
+
+
+
 export const Playing = () => {
     const [user, setUser] = useState("");
-
+const[checkpoint,setCheckpoint]=useState(2)
     const [loading, setLoading] = useState(true);
     const [geoLocation, setGeoLocation] = useState(null);
     // const [checklat, setChecklat] = useState();
@@ -122,6 +125,7 @@ export const Playing = () => {
             if (lat1 > -0.0002 && lat1 < 0.0002 && lon1 > -0.0002 && lon1 < 0.0002) {
 
                 alert("せいかい！")
+                setCheckpoint((prevCount => prevCount - 1))
                 setTf("hidden")
                 setCorrect1(true)
             }
@@ -223,11 +227,15 @@ export const Playing = () => {
         <>
             {!user ? (<Navigate to="/login" />)
                 : (<>
+                    <div className="flex m-2">
+                    <div>残りチェックポイント数</div>
+                    <div className="ml-1 text-indigo-500">{checkpoint}/2</div>
+                    </div>
                     <div className={tf}>
-                        <table className="border-b-2 border-dotted"  >
+                        <table className="border-b-2 border-dotted m-2"  >
 
                             <tr>チェックポイント①</tr>
-
+                            <tr><img src={stamprally.url} alt="" /></tr>
                             <tr>ベストタイミング：{stamprally.time1}</tr>
                             <tr>ヒント</tr>
                             <div className="">
@@ -242,21 +250,23 @@ export const Playing = () => {
                         </table>
                     </div>
                     <div className={tf2}>
-                        <table className="{tf2} border-b-2 border-dotted">
+                        <table className="{tf2} border-b-2 border-dotted m-2">
                             <tr>チェックポイント②</tr>
+                            <tr><img src={stamprally2.url} alt="" /></tr>
                             <tr>ベストタイミング：{stamprally2.time2}</tr>
 
                             <tr>ヒント</tr>
-                            <div className="">
+                            <div className="m">
 
                                 <div>「{stamprally2.hint12}」</div>
                                 <div>「{stamprally2.hint22}」</div>
                                 <div>「{stamprally2.hint32}」</div>
 
-                            </div>
+                           
                             <button className={button} onClick={getCurrentPosition2}>ここだ！</button>
-
+ </div>
                         </table>
+                        <div className="text-indigo-600 m-2"><Link to="/retire">リタイアする</Link></div>
                     </div>
                 </>)}
         </>)

@@ -36,29 +36,35 @@ export const Login = () => {
                 <Navigate to="/mypage" />
             ) : (
                 <>
-                    <h1>ログインページ</h1>
-                    <form onSubmit={handleSubmit}>
-                        <div>
-                            <label>メールアドレス</label>
-                            <input className="rounded border border-gray-300 hover:border-indigo-500"
-                                name="email"
-                                type="email"
-                                value={loginEmail}
-                                onChange={(e) => setLoginEmail(e.target.value)}
+                    <div className="p-2 m-2 border-2 rounded border-indigo-500">
+                        {/* <h1 className="text-indigo-500">ログイン</h1> */}
+                        <form onSubmit={handleSubmit}>
+                            <div className="m-1">
+                                <label>メールアドレス</label>
+                                <div>
+                                    <input className="rounded border border-gray-300 hover:border-indigo-500"
+                                        name="email"
+                                        type="email"
+                                        value={loginEmail}
+                                        onChange={(e) => setLoginEmail(e.target.value)}
 
-                            />
-                        </div>
-                        <div>
-                            <label>パスワード</label>
-                            <input className="rounded border border-gray-300 hover:border-indigo-500"
-                                name="password"
-                                type="password"
-                                value={loginPassword}
-                                onChange={(e) => setLoginPassword(e.target.value)}
-                            />
-                        </div>
-                        <button>ログイン</button>
-                    </form>
+                                    /></div>
+
+                            </div>
+                            <div className="m-1">
+                                <label>パスワード</label>
+                                <div> <input className="rounded border border-gray-300 hover:border-indigo-500"
+                                    name="password"
+                                    type="password"
+                                    value={loginPassword}
+                                    onChange={(e) => setLoginPassword(e.target.value)}
+                                /></div>
+
+                            </div>
+                            <button className="border border-indigo-500 rounded p-1 m-1 bg-indigo-500 text-white">ログイン</button>
+                        </form>
+                    </div>
+
                 </>)}
         </>
     );
