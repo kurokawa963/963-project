@@ -37,7 +37,7 @@ export const Mypage = () => {
 
                             <p className="pb-5">こんにちは、{user?.displayName}さん</p>
                                 <div className={button}> <Link to={`/choice/`} >スタンプラリーで遊ぶ</Link></div>
-                            <div className={button}>       <Link to={`/making/`}>スタンプラリー作成</Link></div>
+                            <div className={button}>       <Link to={`/making/`}>スタンプラリーを作る</Link></div>
                             <div className={button}><Link to={`/archives/${user.uid}`}>旅の記録</Link></div>
                             <div className="ml-auto mr-2 w-max flex-end">
                                     <button className="p-1 mt-3 border border-indigo-200 bg-indigo-200 text-white rounded-lg hover:border-gray-500 " onClick={logout}>ログアウト</button>

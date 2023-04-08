@@ -227,6 +227,7 @@ const[checkpoint,setCheckpoint]=useState(2)
         <>
             {!user ? (<Navigate to="/login" />)
                 : (<>
+                    <div className="border-b-2 w-max p-1 m-1 border-dashed border-indigo-200">チェックポイントはどこから回ってもOK！</div>
                     <div className="flex m-2">
                     <div>残りチェックポイント数</div>
                     <div className="ml-1 text-indigo-500">{checkpoint}/2</div>

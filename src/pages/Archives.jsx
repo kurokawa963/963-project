@@ -100,7 +100,7 @@ export const Archives = () => {
                 {user ? (
                 <> 
                    
-                    <p className="m-2 bg-indigo-700 text-white border rounded-lg border-indigo-700 p-1 text-xl text-center">アーカイブ</p>
+                    <p className="m-2 bg-indigo-700 text-white border rounded-lg border-indigo-700 p-1 text-xl text-center">旅の記録</p>
                     <div className="p-2 m-2 border-2 rounded border-indigo-500">
                         {archive.map((x, i) => (
                             <div key={i} className="border rounded-lg w-max p-1 mb-2">

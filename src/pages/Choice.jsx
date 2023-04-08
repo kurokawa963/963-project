@@ -193,11 +193,11 @@ export const Choice = () => {
                             <p className="m-2 bg-indigo-700 text-white border rounded-lg border-indigo-700 p-1 text-xl text-center">スタンプラリーを探す</p>
                         <div className="p-2 m-2 border-2 rounded border-indigo-500">
                             
-                                <div className="flex m-2">
-                                    <div className="border border-indigo-500 rounded px-2 ">都道府県</div>
-                                    <div className="px-1">と</div>
-                                    <div className="border border-indigo-500 rounded px-2">移動手段</div>
-                                    <div>を選んでください</div>
+                                <div>
+                                  都道府県
+                                   と
+                                    移動手段
+                                   を選んでください
                                 </div>
 
                                 <form action="" onSubmit={handleSubmit(onSubmit)} className="p-1">
@@ -257,7 +257,6 @@ export const Choice = () => {
                                     <div className="mb-2">
                                         <label htmlFor="" className="px-1">移動手段</label>
                                         <select name="" id="wayto" className={input}  {...register("wayto", { required: true })}>
-                                            <option value="" selected >移動手段</option>
                                             <option value="徒歩">徒歩</option>
                                             <option value="車">車</option>
                                             <option value="電車">電車orバス</option>
@@ -265,7 +264,7 @@ export const Choice = () => {
 
                                         </select>
                                     </div>
-                                    <div className="border-b-2 pb-2 border-indigo-300 border-dashed"><button className={input}>検索</button></div>
+                                <div className="border-b-2 pb-2 border-indigo-300 border-dashed"><button className="rounded border border-indigo-500 bg-indigo-500 text-white p-1" >検索</button></div>
                                 </form>
                                 <div className="flex">
                                     <ul className="m-1 m-auto">行き先</ul>
