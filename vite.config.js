@@ -6,6 +6,8 @@ export default defineConfig({
   plugins: [react()],
   build: { // 👈 このブロックを追加しました
     chunkSizeWarningLimit: 1000
-  }
-  
-})
+  },
+
+}
+ 
+)

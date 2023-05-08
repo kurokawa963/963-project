@@ -3,9 +3,10 @@ import { useState, useEffect } from "react"
 import { Link, BrowserRouter, Routes, Route, Navigate, useNavigate, useParams } from "react-router-dom"
 import { auth } from "../firebase";
 import { db } from "../firebase";
-import { doc, getDoc, onSnapshot, query, orderBy, collection, where } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, query, orderBy, collection, where,serverTimestamp } from "firebase/firestore";
 import { Flame} from "./FLame.jsx"
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { BeatLoader } from 'react-spinners';
 
 
 export const Archives = () => {
@@ -38,7 +39,7 @@ export const Archives = () => {
             console.log(documentSnapshot.docs);
 
             setArchive(documentSnapshot.docs.map((x) =>
-                ({ ...x.data(), id: x.id })))
+                ({ ...x.data(),id: x.id })))
             setSubLoading(false);
 
 
@@ -82,7 +83,12 @@ export const Archives = () => {
 
 
     if (subloading) {
-        return (<p>loading now...</p>)
+        return (<>
+            <div className="text-center m-5">
+                <BeatLoader color={'#123abc'} loading={true} timeout={3000} />
+                <p>loading</p>
+            </div>
+        </>)
 
 
     }
@@ -104,8 +110,10 @@ export const Archives = () => {
                     <div className="p-2 m-2 border-2 rounded border-indigo-500">
                         {archive.map((x, i) => (
                             <div key={i} className="border rounded-lg w-max p-1 mb-2">
+                                                                <div>{x.timestamp ? x.timestamp.toDate().toLocaleString() :'' }</div>
                                 <div>{x.stamprally.place1}</div>
                                 <div>{x.stamprally2.place2}</div>
+                                <div>{x.stamprally3 ? x.stamprally3.place2 : ''}</div>
                                 <p></p>
                             </div>
                         ))}

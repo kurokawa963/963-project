@@ -59,7 +59,7 @@ const MyComponent = () => {
           <header class="text-gray-600 body-font">
 
             <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-              <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+              <a class="flex title-font font-medium items-center text-gray-900 mb-4 sm:mb-0">
                 <Link to="/">
                   {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2" > */}
                   <img src={kallomate} className="w-12 h-12" />
@@ -69,7 +69,7 @@ const MyComponent = () => {
                 <span class="ml-3 text-xl">
                   <Link to="/">過労☆メイト</Link></span>
               </a>
-              <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+              <nav class="sm:ml-auto sm:mr-auto flex flex-wrap items-center text-base justify-center">
               
                 <Link to="/login" className={(currentPathname === '/login') ? "mx-2 font-semibold text-indigo-500" : "mx-2"}>ログイン</Link>
              
@@ -112,8 +112,8 @@ const MyComponent = () => {
         <>
           {/* <BrowserRouter> */}
           <header class="text-gray-600 body-font">
-            <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-              <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+            <div class="container mx-auto flex flex-wrap p-5 flex-col sm:flex-row items-center">
+              <a class="flex title-font font-medium items-center text-gray-900 mb-4 sm:mb-0">
                 <Link to="/">
                   <img src={kallomate} className="w-12 h-12" />
 
@@ -124,7 +124,7 @@ const MyComponent = () => {
                 <span class="ml-3 text-xl">
                   <Link to="/">過労☆メイト</Link></span>
               </a>
-              <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+              <nav class="sm:ml-auto sm:mr-auto flex flex-wrap items-center text-base justify-center">
                   <Link to="/choice" className={(currentPathname === '/choice') ? "mx-2 font-semibold text-indigo-500" : "mx-2"}>スタンプラリーで遊ぶ</Link>
                   <Link to="/making" className={(currentPathname === '/making') ? "mx-2 font-semibold text-indigo-500" : "mx-2"}>スタンプラリーを作る</Link>
                   <Link to={`/archives/${user.uid}`} className={(currentPathname === `/archives/${user.uid}`) ? "mx-2 font-semibold text-indigo-500" : "mx-2"}>旅の記録</Link>

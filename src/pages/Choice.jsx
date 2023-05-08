@@ -54,7 +54,9 @@ export const Choice = () => {
             console.log(documentSnapshot.docs);
 
             setStamptitle(documentSnapshot.docs.map((x) => ({ ...x.data(), id: x.id })));
+
             const stampid = stamptitle.map(obj => obj.id)
+
             setStampid(stampid)
 
         })
@@ -81,67 +83,67 @@ export const Choice = () => {
 
     }, [user])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (stamptitle.length === 0) {
-            setGenre([""])
-        } else {
+    //     if (stamptitle.length === 0) {
+    //         setGenre([""])
+    //     } else {
 
-            const get = async () => {
-
-
-                const lists = stamptitle.map(obj => obj.id);
-
-                const q2 = query(collection(db, "genreconnect"),
-                    where("id", "in", lists),)
+    //         const get = async () => {
 
 
-                onSnapshot(q2, (documentSnapshot2) => {
-                    console.log(documentSnapshot2.docs);
+    //             const lists = stamptitle.map(obj => obj.id);
 
-                    setGenre(documentSnapshot2.docs.map((x) => ({ ...x.data(), id: x.id })))
-                    console.log(genre)
-                }
-                )
+    //             const q2 = query(collection(db, "genreconnect"),
+    //                 where("id", "in", lists),)
 
 
+    //             onSnapshot(q2, (documentSnapshot2) => {
+    //                 console.log(documentSnapshot2.docs);
 
-            }
+    //                 setGenre(documentSnapshot2.docs.map((x) => ({ ...x.data(), id: x.id })))
+    //                 console.log(genre)
+    //             }
+    //             )
+    //         }
 
-            get(genre)
-        }
+    //         get(genre)
+    //     }
 
-    }, [stamptitle]);
+    // }, [stamptitle]);
 
-    useEffect(() => {
-        console.log(genre);
+    // useEffect(() => {
+    //     console.log(genre);
 
 
-    }, [genre]);
+    // }, [genre]);
     // ここまででスタンプタイトルのデータを取得する
 
 
 
 
 
-    const list2 = genre.map((x, i) => (
+    // const list2 = genre.map((x, i) => (
 
-        <ul>
-            <li key={i} className="border-b-2 border-dotted mx-2">{x.genre}</li>
+    //     <ul>
+    //         <li key={i} className="border-b-2 border-dotted mx-2">{x.genre}</li>
 
-        </ul>
+    //     </ul>
 
-    ))
+    // ))
 
     const list = stamptitle.map((x, i) => (
 
-        <ul className="flex border-b-2 border-dotted" key={i}>
-            <li className="text-indigo-700 mx-2">
-                <Link to={`/playing/${x.id}`}>{x.title}</Link>
-            </li>
-            <li>{x.region}</li>
-
-        </ul>
+        <div className="border-b-2 border-dotted my-2" key={i}>
+            <Link to={`/playing/${x.id}`}>
+                <div><img src={x.url} alt="" /></div>
+                <div className="text-indigo-700 my-2 text-2xl font-bold">
+                    {x.title}
+                </div>
+                <div>エリア：{x.about}</div>
+                <div className="mb-1">ジャンル：{Array.isArray(x.genre) ? x.genre.join(', ') : ''}</div>
+            </Link>
+        </div>
 
     ))
 
@@ -191,13 +193,13 @@ export const Choice = () => {
                     {!user ? (<Navigate to="/login" />)
                         : (<>
                             <p className="m-2 bg-indigo-700 text-white border rounded-lg border-indigo-700 p-1 text-xl text-center">スタンプラリーを探す</p>
-                        <div className="p-2 m-2 border-2 rounded border-indigo-500">
-                            
+                            <div className="p-2 m-2 border-2 rounded border-indigo-500">
+
                                 <div>
-                                  都道府県
-                                   と
+                                    都道府県
+                                    と
                                     移動手段
-                                   を選んでください
+                                    を選んでください
                                 </div>
 
                                 <form action="" onSubmit={handleSubmit(onSubmit)} className="p-1">
@@ -264,19 +266,18 @@ export const Choice = () => {
 
                                         </select>
                                     </div>
-                                <div className="border-b-2 pb-2 border-indigo-300 border-dashed"><button className="rounded border border-indigo-500 bg-indigo-500 text-white p-1" >検索</button></div>
+                                    <div className="border-b-2 pb-2 border-indigo-300 border-dashed"><button className="rounded border border-indigo-500 bg-indigo-500 text-white p-1" >検索</button></div>
                                 </form>
-                                <div className="flex">
+                                {/* <div className="flex">
                                     <ul className="m-1 m-auto">行き先</ul>
                                     <ul className="m-1 m-auto">ジャンル</ul>
-                                </div>
+                                </div> */}
                                 <div className="flex">
                                     <div className="mb-auto">
-                                        {list}
+                                    {list.length === 0 ?
+                                        (<p>検索結果がありません</p>) : (list)}
                                     </div>
-                                    <div className="mx-auto">
-                                        {list2}
-                                    </div>
+
                                 </div>
                             </div>
                         </>)}
